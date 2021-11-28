@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Обязательные метатеги -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+
+    <title>Веб-ресурс "Расписание"</title>
+</head>
+
+<body>
+    <header id="header" class="fixed-top">
+        <nav class="navbar navbar-expand-lg" style="background-color: #e3f2fd;">
+            <div class="container">
+                <a href="/" class="navbar-brand  ">
+                    <strong class="">ТВОЕ ЛИЧНОЕ РАСПИСАНИЕ</strong>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active" >
+                            <a href="/" class="nav-link text-dark fw-bold">Главная</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a href="#" class="nav-link text-dark fw-bold">О Нас</a>
+                        </li>
+                        <li class="nav-item" th:if="${userRole} == 'GUEST'">
+                            <a href="/login" class="nav-link text-dark fw-bold">Вход</a>
+                        </li>
+                        <li class="nav-item" th:if="${userRole} == 'GUEST'">
+                            <a href="/sign" class="nav-link text-dark fw-bold">Регистрация</a>
+                        </li>
+                        <li class="nav-item" th:if="${userRole} == 'USER'">
+                            <a href="/logout" class="nav-link text-dark fw-bold">Выйти</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                День недели
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li th:each="day:${days}" >
+                                    <a class="dropdown-item" th:href="@{/wdays(typeId=${day.getId()})}"  th:text="${day.getName()}"></a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <h1 class="text-center" style="padding-top: 75px"  >Понедельник</h1>
+    <div class="container" style="padding-top: 75px">
+
+        <div class="row">
+            <div class="col justify-content-center">
+                <h3>Добавить новую задачу</h3>
+                <form th:method="POST" th:action="@{/wdays/create}">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Введите номер дня недели</label>
+                        <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="1..7" name="typeId">
+                    </div>
+                    <div class="form-group pb-4">
+                        <label for="exampleInputPassword1">Введите задачу</label>
+                        <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Задача" name="name">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Создать</button>
+                </form>
+            </div>
+            <div class="col-6">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Задачи</th>
+                            
+                            <th scope="col" class="text-center">Удалить</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="text-center" th:each="record: ${records}" th:method="POST" >
+                            <td th:text="${record.getName()}"></td>
+
+                            <td class="text-center">
+                                <form action="" th:method="POST" th:action="@{/wdays/delete}">
+                                    <input type="hidden" name="id"  th:value="${record.getId()}">
+                                    <button type="submit" class="btn btn-danger">Удалить</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+
+</body></html>
